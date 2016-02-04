@@ -1,0 +1,27 @@
+#!/usr/bin/env python
+
+from spath import Path
+import subprocess
+import time
+import click
+import pydisplay
+
+TITLE=''
+WIN='null'
+
+@click.command(context_settings={'help_option_names':['-h','--help']})
+@click.argument('image', nargs=-1, type=click.Path(exists=True))
+@click.option('--win', '-w', default='')
+@click.option('--title', '-t', default='')
+@click.option('--port', '-p', default=8000)
+def disp(img_fname, win, title, port):
+    img_fname = Path(img_fname)
+    ext = img_fname.ext.lower()
+    valid_ext = set(['.png','.gif','.bmp','.webp','.pdf','.jpg','.jpeg'])
+    if not ext in valid_ext:
+        raise Exception('unrecognized image format: {}'.format(ext))
+    #command = '{ "command": "image", "title":"{title:s}", "src":"data:image/${EXT};base64, 
+    # openssl enc -base64 -in $IMGFILE
+            
+    #        }
+    #compose | curl -X POST -d @- http://localhost:8000/events
