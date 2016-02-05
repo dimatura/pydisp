@@ -11,10 +11,12 @@ import cv2
 import requests
 
 __all__ = ['image',
-           'images',
-           'plot',
+           'dyplot',
            'send',
-           'text']
+           'text',
+           'img_encode',
+           'b64_encode',
+           'encode']
 
 
 # TODO some configuration mechanism
@@ -59,16 +61,21 @@ def rgb_preprocess(img):
     return img
 
 
+def img_encode(img, encoding):
+    ret, data = cv2.imencode('.'+encoding, img)
+    return data
+
+
+def b64_encode(data, encoding):
+    b64data = 'data:image/{};base64,{}'.format(encoding, base64.b64encode(data).decode('ascii'))
+    return b64data
+
+
 def encode(img, **kwargs):
     encoding = kwargs.get('encoding', 'jpg')
-    if encoding=='jpg':
-        ret, data = cv2.imencode('.jpg', img)
-    elif encoding=='png':
-        ret, data = cv2.imencode('.png', img)[1]
-    else:
-        raise ValueError('unknown encoding')
-    imgdata = 'data:image/png;base64,' + base64.b64encode(data).decode('ascii')
-    return imgdata
+    data = img_encode(img, encoding)
+    data = b64_encode(data, encoding)
+    return data
 
 
 def image(img, **kwargs):
