@@ -5,7 +5,7 @@ import base64
 import subprocess
 import time
 import click
-import pydisplay
+from pydisplay.pydisplay import b64_encode
 
 TITLE=''
 WIN='null'
@@ -14,7 +14,8 @@ WIN='null'
 @click.argument('images', nargs=-1, type=click.Path(exists=True), required=True)
 @click.option('--win', '-w', default='')
 @click.option('--title', '-t', default='')
-def disp(images, win, title):
+@click.option('--width', default=None)
+def disp(images, win, title, width):
     # TODO tiling option
     for img_fname in images:
         print img_fname
@@ -25,8 +26,9 @@ def disp(images, win, title):
         if not ext.lower() in valid_ext:
             raise Exception('unrecognized image format: {}'.format(ext))
         with open(img_fname, 'rb') as f:
-            encoded = pydisplay.b64_encode(f.read(), ext)
-        pydisplay.send(command='image', id=win, title=title, src=encoded)
+            encoded = b64_encode(f.read(), ext)
+        pydisplay.send(command='image', id=win, title=title, src=encoded,
+                       width=width)
 
 
 if __name__ == '__main__':

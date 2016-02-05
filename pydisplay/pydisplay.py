@@ -13,10 +13,7 @@ import requests
 __all__ = ['image',
            'dyplot',
            'send',
-           'text',
-           'img_encode',
-           'b64_encode',
-           'encode']
+           'text',]
 
 
 # TODO some configuration mechanism
@@ -25,7 +22,7 @@ URL = 'http://localhost:8000/events'
 
 def uid():
     """ return a unique id for a pane """
-    return 'pane_{}' % uuid.uuid4()
+    return 'pane_{}'.format(uuid.uuid4())
 
 
 def send(**command):
@@ -39,12 +36,12 @@ def send(**command):
 
 def scalar_preprocess(img, **kwargs):
     """ vmin, vmax, clip, cmap """
-    vmin = kwargs.get('vmin', None)
-    vmax = kwargs.get('vmax', None)
-    clip = kwargs.get('clip', None)
-    cmap = kwargs.get('jet', None)
+    vmin = kwargs.get('vmin')
+    vmax = kwargs.get('vmax')
+    clip = kwargs.get('clip')
+    cmap = kwargs.get('cmap', 'jet')
     # TODO customization
-    normalizer = mpl.colors.Normalizer(vmin, vmax, clip)
+    normalizer = mpl.colors.Normalize(vmin, vmax, clip)
     nimg = normalizer(img)
     cmap = cm.get_cmap(cmap)
     cimg = cmap(nimg)[:,:,:3] # ignore alpha
