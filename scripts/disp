@@ -5,6 +5,7 @@ import base64
 import subprocess
 import time
 import click
+import pydisplay
 from pydisplay.pydisplay import b64_encode
 
 TITLE=''
