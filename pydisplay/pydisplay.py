@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import cStringIO as StringIO
 import base64
 import json
 import uuid
@@ -13,7 +14,8 @@ import requests
 __all__ = ['image',
            'dyplot',
            'send',
-           'text',]
+           'text',
+           'pylab',]
 
 
 # TODO some configuration mechanism
@@ -75,6 +77,21 @@ def encode(img, **kwargs):
     return data
 
 
+def pylab(fig, **kwargs):
+    win = kwargs.get('win') or uid()
+    output = StringIO.StringIO()
+    fig.savefig(output, format='png')
+    data = output.getvalue()
+    output.close()
+    encoded = b64_encode(data, 'png')
+    send(command='image', id=win, src=encoded,
+         labels=kwargs.get('labels'),
+         width=kwargs.get('width'),
+         title=kwargs.get('title'))
+    return win
+
+
+
 def image(img, **kwargs):
     """ image(img, [win, title, labels, width, kwargs])
     to_bgr: converts to bgr, if encoded as rgb (default True because opencv).
@@ -124,7 +141,7 @@ def dyplot(data, **kwargs):
     win = kwargs.get('win') or uid()
 
     dataset = {}
-    if type(data).__module__ == numpy.__name__:
+    if type(data).__module__ == np.__name__:
         dataset = data.tolist()
     else:
         dataset = data
