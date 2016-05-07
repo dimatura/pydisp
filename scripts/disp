@@ -16,7 +16,8 @@ WIN='null'
 @click.option('--win', '-w', default='')
 @click.option('--title', '-t', default='')
 @click.option('--width', default=None)
-def disp(images, win, title, width):
+@click.option('--pause', '-p', default=0.2, help='pause between images')
+def disp(images, win, title, width, pause):
     # TODO tiling option
     for img_fname in images:
         print img_fname
@@ -30,6 +31,7 @@ def disp(images, win, title, width):
             encoded = b64_encode(f.read(), ext)
         pydisplay.send(command='image', id=win, title=title, src=encoded,
                        width=width)
+        time.sleep(pause)
 
 
 if __name__ == '__main__':
