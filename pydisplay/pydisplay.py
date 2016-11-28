@@ -15,7 +15,8 @@ __all__ = ['image',
            'dyplot',
            'send',
            'text',
-           'pylab',]
+           'pylab',
+           'pane',]
 
 
 # TODO some configuration mechanism
@@ -34,6 +35,12 @@ def send(**command):
     req = requests.post(URL, headers=headers, data=command.encode('ascii'))
     resp = req.content
     return resp is not None
+
+
+def pane(panetype, win, title, content):
+    win = win or uid()
+    send(command='pane', type=panetype, id=win, title=title, content=content)
+    return win
 
 
 def scalar_preprocess(img, **kwargs):
@@ -117,11 +124,14 @@ def image(img, **kwargs):
 
     encoded = encode(img, **kwargs)
 
-    send(command='image', id=win, src=encoded,
-         labels=kwargs.get('labels'),
-         width=kwargs.get('width'),
-         title=kwargs.get('title'))
-    return win
+    return pane('image',
+                kwargs.get('win'),
+                kwargs.get('title'),
+                content={
+                    'src': encoded,
+                    'labels': kwargs.get('labels'),
+                    'width': kwargs.get('width'),
+                })
 
 
 def text(txt, **kwargs):

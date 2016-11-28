@@ -29,8 +29,13 @@ def disp(images, win, title, width, pause):
             raise Exception('unrecognized image format: {}'.format(ext))
         with open(img_fname, 'rb') as f:
             encoded = b64_encode(f.read(), ext)
-        pydisplay.send(command='image', id=win, title=title, src=encoded,
-                       width=width)
+        pydisplay.pane('image',
+                       win=win,
+                       title=title,
+                       content={
+                           'src': encoded,
+                           'width': width,
+                           })
         time.sleep(pause)
 
 
