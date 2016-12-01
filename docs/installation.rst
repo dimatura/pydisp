@@ -4,9 +4,9 @@ Installation
 
 At the command line::
 
-    $ easy_install pydisplay
+    $ easy_install pydisp
 
 Or, if you have virtualenvwrapper installed::
 
-    $ mkvirtualenv pydisplay
-    $ pip install pydisplay
+    $ mkvirtualenv pydisp
+    $ pip install pydisp

@@ -23,27 +23,27 @@ test_requirements = [
 ]
 
 setup(
-    name='pydisplay',
+    name='pydisp',
     version='0.0.1',
     description="python client for display",
     # long_description=readme + '\n\n' + history,
     long_description=readme + '\n',
     author="Daniel Maturana",
     author_email='dimatura@cmu.edu',
-    url='https://github.com/dimatura/pydisplay',
+    url='https://github.com/dimatura/pydisp',
     packages=[
-        'pydisplay',
+        'pydisp',
     ],
     scripts=[
         'scripts/disp',
     ],
-    package_dir={'pydisplay':
-                 'pydisplay'},
+    package_dir={'pydisp':
+                 'pydisp'},
     include_package_data=True,
     install_requires=requirements,
     license="BSD",
     zip_safe=False,
-    keywords='pydisplay',
+    keywords='pydisp',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',

@@ -5,8 +5,8 @@ import base64
 import subprocess
 import time
 import click
-import pydisplay
-from pydisplay.pydisplay import b64_encode
+import pydisp
+from pydisp.pydisp import b64_encode
 
 TITLE=''
 WIN='null'
@@ -31,7 +31,7 @@ def disp(images, win, title, width, pause):
             encoded = b64_encode(f.read(), ext)
         if title == '':
             title = img_fname
-        pydisplay.pane('image',
+        pydisp.pane('image',
                        win=win,
                        title=title,
                        content={

@@ -2,15 +2,15 @@
 # -*- coding: utf-8 -*-
 
 """
-test_pydisplay
+test_pydisp
 ----------------------------------
 
-Tests for `pydisplay` module.
+Tests for `pydisp` module.
 """
 
 import unittest
 
-from pydisplay import pydisplay
+from pydisp import pydisp
 
 
 class TestPydisplay(unittest.TestCase):

@@ -35,7 +35,7 @@ clean-test:
 	rm -fr htmlcov/
 
 lint:
-	flake8 pydisplay tests
+	flake8 pydisp tests
 
 test:
 	python setup.py test
@@ -44,15 +44,15 @@ test-all:
 	tox
 
 coverage:
-	coverage run --source pydisplay setup.py test
+	coverage run --source pydisp setup.py test
 	coverage report -m
 	coverage html
 	xdg-open htmlcov/index.html
 
 docs:
-	rm -f docs/pydisplay.rst
+	rm -f docs/pydisp.rst
 	rm -f docs/modules.rst
-	sphinx-apidoc -o docs/ pydisplay
+	sphinx-apidoc -o docs/ pydisp
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	xdg-open docs/_build/html/index.html

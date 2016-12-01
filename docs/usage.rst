@@ -2,6 +2,6 @@
 Usage
 ========
 
-To use pydisplay in a project::
+To use pydisp in a project::
 
-    import pydisplay
+    import pydisp
