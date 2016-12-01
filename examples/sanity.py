@@ -10,5 +10,7 @@ img = (np.random.random((32, 32, 3))*255).astype('u1')
 pydisp.image(img, title='random image', win='w2')
 
 img = np.zeros((32, 32, 3), dtype='u1')
-img[:, :, 0] = 255
+img[:, :, 2] = 255
 pydisp.image(img, title='blue image', win='w3')
+
+pydisp.image(img, to_bgr=True, title='red image', win='w4')

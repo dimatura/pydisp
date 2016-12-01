@@ -10,7 +10,6 @@ from PIL import Image
 import matplotlib as mpl
 import matplotlib.cm as cm
 import numpy as np
-import cv2
 import requests
 
 
@@ -107,12 +106,12 @@ def pylab(fig, **kwargs):
 
 def image(img, **kwargs):
     """ image(img, [win, title, labels, width, kwargs])
-    to_bgr: converts to bgr, if encoded as rgb (default True because opencv).
+    to_bgr: swap blue and red channels (default False)
     encoding: 'jpg' (default) or 'png'
     kwargs is argument for scalar preprocessing
     """
 
-    to_bgr = kwargs.get('to_bgr', True)
+    to_bgr = kwargs.get('to_bgr', False)
 
     if img.ndim not in (2, 3):
         raise ValueError('image should be 2 (gray) or 3 (rgb) dimensional')
@@ -125,7 +124,7 @@ def image(img, **kwargs):
         img = scalar_preprocess(img, **kwargs)
 
     if to_bgr:
-        img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+        img = img[...,[2, 1, 0]]
 
     encoding = kwargs.get('encoding', 'jpg')
     data = img_encode(img, encoding)
