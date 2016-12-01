@@ -1,14 +1,13 @@
 .PHONY: clean-pyc clean-build docs clean
 
 help:
-	@echo "clean - remove all build, test, coverage and Python artifacts"
+	@echo "clean - remove all build, test, and Python artifacts"
 	@echo "clean-build - remove build artifacts"
 	@echo "clean-pyc - remove Python file artifacts"
-	@echo "clean-test - remove test and coverage artifacts"
+	@echo "clean-test - remove test and artifacts"
 	@echo "lint - check style with flake8"
 	@echo "test - run tests quickly with the default Python"
 	@echo "test-all - run tests on every Python version with tox"
-	@echo "coverage - check code coverage quickly with the default Python"
 	@echo "docs - generate Sphinx HTML documentation, including API docs"
 	@echo "release - package and upload a release"
 	@echo "dist - package"
@@ -31,8 +30,6 @@ clean-pyc:
 
 clean-test:
 	rm -fr .tox/
-	rm -f .coverage
-	rm -fr htmlcov/
 
 lint:
 	flake8 pydisp tests
@@ -42,12 +39,6 @@ test:
 
 test-all:
 	tox
-
-coverage:
-	coverage run --source pydisp setup.py test
-	coverage report -m
-	coverage html
-	xdg-open htmlcov/index.html
 
 docs:
 	rm -f docs/pydisp.rst

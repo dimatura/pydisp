@@ -5,18 +5,23 @@ import base64
 import json
 import uuid
 
+from PIL import Image
+
 import matplotlib as mpl
 import matplotlib.cm as cm
 import numpy as np
 import cv2
 import requests
 
+
 __all__ = ['image',
            'dyplot',
            'send',
            'text',
            'pylab',
-           'pane',]
+           'pane',
+           'b64_encode',
+           ]
 
 
 # TODO some configuration mechanism
@@ -31,7 +36,7 @@ def uid():
 def send(**command):
     """ send command to server """
     command = json.dumps(command)
-    headers = {'Content-Type' : 'application/text'}
+    headers = {'Content-Type': 'application/text'}
     req = requests.post(URL, headers=headers, data=command.encode('ascii'))
     resp = req.content
     return resp is not None
@@ -53,7 +58,7 @@ def scalar_preprocess(img, **kwargs):
     normalizer = mpl.colors.Normalize(vmin, vmax, clip)
     nimg = normalizer(img)
     cmap = cm.get_cmap(cmap)
-    cimg = cmap(nimg)[:,:,:3] # ignore alpha
+    cimg = cmap(nimg)[:, :, :3]  # ignore alpha
     simg = (255*cimg).astype(np.uint8)
     return simg
 
@@ -62,26 +67,28 @@ def rgb_preprocess(img):
     if np.issubdtype(img.dtype, np.float):
         # assuming 0., 1. range
         return (img*255).clip(0, 255).astype(np.uint8)
-    if not img.dtype==np.uint8:
+    if not img.dtype == np.uint8:
         raise ValueError('only uint8 or float for 3-channel images')
     return img
 
 
 def img_encode(img, encoding):
-    ret, data = cv2.imencode('.'+encoding, img)
+    # ret, data = cv2.imencode('.'+encoding, img)
+
+    if encoding=='jpg':
+        encoding = 'jpeg'
+
+    buf = StringIO.StringIO()
+    Image.fromarray(img).save(buf, format=encoding)
+    data = buf.getvalue()
+    buf.close()
+
     return data
 
 
 def b64_encode(data, encoding):
     b64data = 'data:image/{};base64,{}'.format(encoding, base64.b64encode(data).decode('ascii'))
     return b64data
-
-
-def encode(img, **kwargs):
-    encoding = kwargs.get('encoding', 'jpg')
-    data = img_encode(img, encoding)
-    data = b64_encode(data, encoding)
-    return data
 
 
 def pylab(fig, **kwargs):
@@ -98,7 +105,6 @@ def pylab(fig, **kwargs):
     return win
 
 
-
 def image(img, **kwargs):
     """ image(img, [win, title, labels, width, kwargs])
     to_bgr: converts to bgr, if encoded as rgb (default True because opencv).
@@ -106,7 +112,6 @@ def image(img, **kwargs):
     kwargs is argument for scalar preprocessing
     """
 
-    win = kwargs.get('win', uid())
     to_bgr = kwargs.get('to_bgr', True)
 
     if img.ndim not in (2, 3):
@@ -114,7 +119,7 @@ def image(img, **kwargs):
 
     assert img.ndim == 2 or img.ndim == 3
 
-    if img.ndim==3:
+    if img.ndim == 3:
         img = rgb_preprocess(img)
     else:
         img = scalar_preprocess(img, **kwargs)
@@ -122,7 +127,9 @@ def image(img, **kwargs):
     if to_bgr:
         img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
 
-    encoded = encode(img, **kwargs)
+    encoding = kwargs.get('encoding', 'jpg')
+    data = img_encode(img, encoding)
+    encoded = b64_encode(data, encoding)
 
     return pane('image',
                 kwargs.get('win'),
@@ -137,7 +144,10 @@ def image(img, **kwargs):
 def text(txt, **kwargs):
     win = kwargs.get('win') or uid()
     title = kwargs.get('title') or 'text'
-    send(command='text', id=win, title=title, text=txt)
+    return pane('text',
+                win,
+                title,
+                content=txt)
 
 
 def dyplot(data, **kwargs):
@@ -165,6 +175,4 @@ def dyplot(data, **kwargs):
     # Don't pass our options to dygraphs.
     options.pop('win', None)
 
-    send(command='plot', id=win, title=kwargs.get('title'), options=options)
-    return win
-
+    return pane('plot', kwargs.get('win'), kwargs.get('title'), content=options)

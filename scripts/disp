@@ -20,7 +20,7 @@ WIN='null'
 def disp(images, win, title, width, pause):
     # TODO tiling option
     for img_fname in images:
-        print img_fname
+        click.echo(img_fname)
         base, ext = os.path.splitext(img_fname)
         ext = ext.replace('.', '')
         ext = ext.replace('jpeg', 'jpg')
@@ -28,17 +28,18 @@ def disp(images, win, title, width, pause):
         if not ext.lower() in valid_ext:
             raise Exception('unrecognized image format: {}'.format(ext))
         with open(img_fname, 'rb') as f:
-            encoded = b64_encode(f.read(), ext)
+            encoded = pydisp.b64_encode(f.read(), ext)
         if title == '':
             title = img_fname
         pydisp.pane('image',
-                       win=win,
-                       title=title,
-                       content={
-                           'src': encoded,
-                           'width': width,
-                           })
-        time.sleep(pause)
+                    win=win,
+                    title=title,
+                    content={
+                             'src': encoded,
+                             'width': width,
+                            })
+        if pause > 0.0:
+            time.sleep(pause)
 
 
 if __name__ == '__main__':
