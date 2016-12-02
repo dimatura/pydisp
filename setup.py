@@ -15,7 +15,11 @@ with open('README.rst') as readme_file:
 #    history = history_file.read().replace('.. :changelog:', '')
 
 requirements = [
-    # TODO: put package requirements here
+    'click',
+    'matplotlib',
+    'numpy',
+    'requests',
+    'pillow',
 ]
 
 test_requirements = [
