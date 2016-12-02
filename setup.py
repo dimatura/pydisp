@@ -15,6 +15,7 @@ with open('README.rst') as readme_file:
 #    history = history_file.read().replace('.. :changelog:', '')
 
 requirements = [
+    'wheel',
     'click',
     'matplotlib',
     'numpy',
