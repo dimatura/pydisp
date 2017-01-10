@@ -1,18 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
+from setuptools import setup
 
 
 with open('README.rst') as readme_file:
     readme = readme_file.read()
 
-#with open('HISTORY.rst') as history_file:
-#    history = history_file.read().replace('.. :changelog:', '')
 
 requirements = [
     'wheel',
@@ -30,8 +24,7 @@ test_requirements = [
 setup(
     name='pydisp',
     version='0.0.1',
-    description="python client for display",
-    # long_description=readme + '\n\n' + history,
+    description="Python client for display",
     long_description=readme + '\n',
     author="Daniel Maturana",
     author_email='dimatura@cmu.edu',
@@ -39,14 +32,16 @@ setup(
     packages=[
         'pydisp',
     ],
-    scripts=[
-        'scripts/disp',
-    ],
     package_dir={'pydisp':
                  'pydisp'},
+    entry_points={
+        'console_scripts': [
+            'pydisp=pydisp.cli:main'
+        ]
+    },
     include_package_data=True,
     install_requires=requirements,
-    license="BSD",
+    license="BSD license",
     zip_safe=False,
     keywords='pydisp',
     classifiers=[

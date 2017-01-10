@@ -20,25 +20,35 @@ __all__ = ['image',
            'pylab',
            'pane',
            'b64_encode',
+           'is_valid_image_mime_type',
            ]
 
 
-# TODO some configuration mechanism
-URL = 'http://localhost:8000/events'
+VALID_IMAGE_MIME_TYPES = {'png','gif','bmp','webp','jpeg'}
 
 
-def uid():
-    """ return a unique id for a pane """
-    return 'pane_{}'.format(uuid.uuid4())
+def get_url():
+    URL = 'http://localhost:8000/events'
+    return URL
 
 
 def send(**command):
     """ send command to server """
     command = json.dumps(command)
     headers = {'Content-Type': 'application/text'}
-    req = requests.post(URL, headers=headers, data=command.encode('ascii'))
+    url = get_url()
+    req = requests.post(url, headers=headers, data=command.encode('ascii'))
     resp = req.content
     return resp is not None
+
+
+def is_valid_image_mime_type(mt):
+    return mt in VALID_IMAGE_MIME_TYPES
+
+
+def uid():
+    """ return a unique id for a pane """
+    return 'pane_{}'.format(uuid.uuid4())
 
 
 def pane(panetype, win, title, content):
@@ -86,7 +96,8 @@ def img_encode(img, encoding):
 
 
 def b64_encode(data, encoding):
-    b64data = 'data:image/{};base64,{}'.format(encoding, base64.b64encode(data).decode('ascii'))
+    b64data = ('data:image/{};base64,{}'
+        .format(encoding, base64.b64encode(data).decode('ascii')))
     return b64data
 
 
@@ -105,7 +116,9 @@ def pylab(fig, **kwargs):
 
 
 def image(img, **kwargs):
-    """ image(img, [win, title, labels, width, kwargs])
+    """ Display image encoded as an array.
+
+    image(img, [win, title, labels, width, kwargs])
     to_bgr: swap blue and red channels (default False)
     encoding: 'jpg' (default) or 'png'
     kwargs is argument for scalar preprocessing
