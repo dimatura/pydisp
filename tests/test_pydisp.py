@@ -2,27 +2,14 @@
 # -*- coding: utf-8 -*-
 
 """
-test_pydisp
-----------------------------------
-
 Tests for `pydisp` module.
 """
 
-import unittest
+import pytest
 
-from pydisp import pydisp
+from contextlib import contextmanager
+from click.testing import CliRunner
 
+import pydisp
+from pydisp import cli
 
-class TestPydisplay(unittest.TestCase):
-
-    def setUp(self):
-        pass
-
-    def test_something(self):
-        pass
-
-    def tearDown(self):
-        pass
-
-if __name__ == '__main__':
-    unittest.main()
