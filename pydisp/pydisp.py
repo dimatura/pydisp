@@ -26,24 +26,21 @@ __all__ = ['image',
 
 VALID_IMAGE_MIME_TYPES = {'png','gif','bmp','webp','jpeg'}
 
+PORT = 8000
+HOSTNAME = 'localhost'
 
-def get_url():
-    URL = 'http://localhost:8000/events'
-    return URL
+
+def get_display_url():
+    return "http://{:s}:{:d}/events".format(HOSTNAME, PORT)
 
 
 def send(**command):
     """ send command to server """
     command = json.dumps(command)
     headers = {'Content-Type': 'application/text'}
-    url = get_url()
-    req = requests.post(url, headers=headers, data=command.encode('ascii'))
+    req = requests.post(get_display_url(), headers=headers, data=command.encode('ascii'))
     resp = req.content
     return resp is not None
-
-
-def is_valid_image_mime_type(mt):
-    return mt in VALID_IMAGE_MIME_TYPES
 
 
 def uid():
@@ -52,9 +49,15 @@ def uid():
 
 
 def pane(panetype, win, title, content):
-    win = win or uid()
+    """ create a pane (formerly window) """
+    if win is None:
+        win = uid()
     send(command='pane', type=panetype, id=win, title=title, content=content)
     return win
+
+
+def is_valid_image_mime_type(mt):
+    return mt in VALID_IMAGE_MIME_TYPES
 
 
 def scalar_preprocess(img, **kwargs):
@@ -102,16 +105,22 @@ def b64_encode(data, encoding):
 
 
 def pylab(fig, **kwargs):
-    win = kwargs.get('win') or uid()
+    """ Display a matplotlib figure. """
+
+    # save figure to buffer
     output = StringIO.StringIO()
     fig.savefig(output, format='png')
     data = output.getvalue()
     output.close()
+
     encoded = b64_encode(data, 'png')
-    send(command='image', id=win, src=encoded,
-         labels=kwargs.get('labels'),
-         width=kwargs.get('width'),
-         title=kwargs.get('title'))
+    pydisp.pane('image',
+                win=kwargs.get('win'),
+                title=kwargs.get('title'),
+                content={
+                         'src': encoded,
+                         'width': kwargs.get('width'),
+                        })
     return win
 
 

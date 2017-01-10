@@ -11,6 +11,8 @@ pydisp.image(img, title='random image', win='w2')
 
 img = np.zeros((32, 32, 3), dtype='u1')
 img[:, :, 2] = 255
-pydisp.image(img, title='blue image', win='w3')
+labels = [[0, 16, 'foo']]
+pydisp.image(img, title='blue image', win='w3', labels=labels)
 
-pydisp.image(img, to_bgr=True, title='red image', win='w4')
+labels = [[0.0, 0.5, 'foo']]
+pydisp.image(img, to_bgr=True, title='red image', win='w4', labels=labels)

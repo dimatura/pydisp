@@ -11,13 +11,22 @@ import pydisp
 @click.command(context_settings={'help_option_names':['-h','--help']})
 @click.argument('images', nargs=-1, type=click.Path(exists=True), required=True)
 @click.option('--title', '-t', type=str, help='Window title')
-@click.option('--wid', type=str, help='Window ID. By default, a generated unique id. %p will use path as id. %f will use filename.')
+@click.option('--win', type=str, help='Window ID. By default, a generated unique id. %p will use path as id. %f will use filename.')
 @click.option('--width', '-w', type=int, help='Initial indow width.' )
 @click.option('--pause', '-p', default=0.2, help='Pause between images in seconds')
-def main(images, title, wid, width, pause):
+@click.option('--port', default=pydisp.PORT, help='Display server port.')
+@click.option('--hostname', default=pydisp.HOSTNAME, help='Display server hostname.')
+def main(images, title, win, width, pause, port, hostname):
     # TODO tiling option
+
+    if port is not None:
+        pydisp.PORT = port
+
+    if hostname is not None:
+        pydisp.HOSTNAME = hostname
+
     for img_fname in images:
-        click.echo(img_fname)
+        click.echo('loading {}'.format(img_fname))
         base, ext = os.path.splitext(img_fname)
         ext = ext.lower().replace('.', '').replace('jpg', 'jpeg')
         if not pydisp.is_valid_image_mime_type(ext):
@@ -26,14 +35,15 @@ def main(images, title, wid, width, pause):
             encoded = pydisp.b64_encode(f.read(), ext)
         if title == '':
             title = img_fname
-        if wid=='%f':
-            wid = img_fname
-        elif wid=='%p':
-            wid = os.path.basename(img_fname)
+        if win=='%f':
+            win = img_fname
+        elif win=='%p':
+            win = os.path.basename(img_fname)
         pydisp.pane('image',
-                    win=wid,
+                    win=win,
                     title=title,
                     content={
+                             'labels': [[0.0, 0.0, 'bar'], [20.0, 0.0, 'foo']],
                              'src': encoded,
                              'width': width,
                             })
