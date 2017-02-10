@@ -42,9 +42,7 @@ def main(images, title, win, width, pause, port, hostname):
         pydisp.pane('image',
                     win=win,
                     title=title,
-                    content={
-                             'labels': [[0.0, 0.0, 'bar'], [20.0, 0.0, 'foo']],
-                             'src': encoded,
+                    content={'src': encoded,
                              'width': width,
                             })
         if (len(img_fname) > 1) and (pause > 0.0):
