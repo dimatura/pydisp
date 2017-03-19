@@ -2,9 +2,10 @@
 
 import os
 import base64
-import subprocess
 import time
+
 import click
+
 import pydisp
 
 
@@ -14,16 +15,17 @@ import pydisp
 @click.option('--win', type=str, help='Window ID. By default, a generated unique id. %p will use path as id. %f will use filename.')
 @click.option('--width', '-w', type=int, help='Initial indow width.' )
 @click.option('--pause', '-p', default=0.2, help='Pause between images in seconds')
-@click.option('--port', default=pydisp.PORT, help='Display server port.')
-@click.option('--hostname', default=pydisp.HOSTNAME, help='Display server hostname.')
+@click.option('--port', type=int, help='Display server port. Default is read from .display/config.json, or 8000.')
+@click.option('--hostname', type=str, help='Display server hostname. Default is read from .display/config.json, or localhost.')
 def main(images, title, win, width, pause, port, hostname):
+
     # TODO tiling option
 
     if port is not None:
-        pydisp.PORT = port
+        pydisp.CONFIG.PORT = port
 
     if hostname is not None:
-        pydisp.HOSTNAME = hostname
+        pydisp.CONFIG.HOSTNAME = hostname
 
     for img_fname in images:
         click.echo('loading {}'.format(img_fname))

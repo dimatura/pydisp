@@ -4,6 +4,7 @@ import cStringIO as StringIO
 import base64
 import json
 import uuid
+import os
 
 from PIL import Image
 
@@ -21,24 +22,42 @@ __all__ = ['image',
            'pane',
            'b64_encode',
            'is_valid_image_mime_type',
+           'CONFIG',
            ]
 
 
 VALID_IMAGE_MIME_TYPES = {'png','gif','bmp','webp','jpeg'}
 
-PORT = 8000
-HOSTNAME = 'localhost'
+
+class CONFIG(object):
+    PORT = 8000
+    HOSTNAME = 'localhost'
 
 
-def get_display_url():
-    return "http://{:s}:{:d}/events".format(HOSTNAME, PORT)
+    @staticmethod
+    def load_config():
+        # TODO what is the right way (TM)
+        fname = os.path.join(os.environ['HOME'], '.display', 'config.json')
+        if os.path.exists(fname):
+            with open(fname, 'r') as f:
+                cfg = json.load(f)
+            CONFIG.PORT = int(cfg['port'])
+            CONFIG.HOSTNAME = cfg['hostname']
+
+
+    @staticmethod
+    def display_url():
+        return "http://{:s}:{:d}/events".format(CONFIG.HOSTNAME, CONFIG.PORT)
+
+
+CONFIG.load_config()
 
 
 def send(**command):
     """ send command to server """
     command = json.dumps(command)
     headers = {'Content-Type': 'application/text'}
-    req = requests.post(get_display_url(), headers=headers, data=command.encode('ascii'))
+    req = requests.post(CONFIG.display_url(), headers=headers, data=command.encode('ascii'))
     resp = req.content
     return resp is not None
 
